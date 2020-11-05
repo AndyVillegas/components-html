@@ -3,5 +3,13 @@ body{
   padding: 0;
 }
 .table-responsive{
-  
+  width: 100%;
+}
+.table-responsive--nowrap{
+  white-space: nowrap;
+}
+.table-responsive tbody tr{
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }
