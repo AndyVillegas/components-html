@@ -1,15 +1,37 @@
-body{
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
   margin: 0;
-  padding: 0;
+  padding: 2rem;
+  font-family: sans-serif;
 }
-.table-responsive{
+
+.table-responsive {
   width: 100%;
+  background-color: white;
+  border-collapse: collapse;
+  border: 1px solid rgba(0, 0, 0, 0.5);
 }
-.table-responsive--nowrap{
+
+.table-responsive--nowrap {
   white-space: nowrap;
 }
-.table-responsive tbody tr{
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
+
+.table-responsive thead {
+  background-color: darkcyan;
+  color: white;
+}
+
+.table-responsive td,
+.table-responsive th {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+
+}
+
+.table-cell--right {
+  text-align: right;
 }
