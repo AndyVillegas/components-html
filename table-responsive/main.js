@@ -171,6 +171,7 @@ const resizeObserver = new ResizeObserver(() => {
   else
     removeCollapsed();
 });
+// TODO: Tomar los anchos de las columnas justo antes de que sea collapsible para así calcular el ancho exacto en el que se puede mostrar toda la tabla
 function addCollapsed() {
   $table.classList.add('table-responsive--collapsed');
   isCollapsible = true;
