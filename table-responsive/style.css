@@ -21,6 +21,29 @@ body {
   white-space: nowrap;
 }
 
+.table-responsive--collapsed tbody tr[role=row] td:first-child {
+  cursor: pointer;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.table-responsive--collapsed tbody tr[role=row] td:first-child::before {
+  content: '\271A';
+  position: absolute;
+  display: block;
+  left: .2rem;
+  bottom: .1rem;
+  background-color: darkcyan;
+  color: white;
+  height: 1rem;
+  line-height: 1rem;
+  border-radius: .1rem;
+}
+
+.table-responsive--collapsed tbody tr[role=row].parent td:first-child::before {
+  content: '\268A';
+}
+
 .table-responsive thead {
   background-color: darkcyan;
   color: white;
