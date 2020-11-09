@@ -11,7 +11,9 @@ const columnsLength = $headers.length;
 const style = getComputedStyle($tableParent);
 const paddingExtra = (parseInt(style.paddingRight) + parseInt(style.paddingLeft));
 const twbi = getTableWidthByIndex();
-let lastIndex = $headers.length - 1; // El índice hace referencia a la última columna mostrada
+const maxIndex = columnsLength - 1; // Es el índice mpaximo de las columnas
+let lastIndex = maxIndex; // El índice hace referencia a la última columna mostrada
+let isCollapsible = false; // Bandera para saber si la tabla se puede collapsar o no
 
 function settingRows() {
   Array.from($rows).forEach(row => {
@@ -113,6 +115,7 @@ function removeTrChild(trParent) {
 }
 
 function toggleTrChild(trParent) {
+  if (!isCollapsible) return;
   if (!trParent.classList.contains(CLASS_NAME_PARENT))
     renderTrChild(trParent);
   else
@@ -120,7 +123,7 @@ function toggleTrChild(trParent) {
 }
 
 function pushTrChild() {
-  const $children = document.querySelectorAll(`.${CLASS_NAME_CHILD}`);
+  const $children = $table.querySelectorAll(`.${CLASS_NAME_CHILD}`);
   $children.forEach(child => {
     const tdElement = child.querySelector('td');
     tdElement.colSpan -= 1; // Se le resta porque ahora la tabla tiene una columna menos
@@ -131,7 +134,7 @@ function pushTrChild() {
 }
 
 function popTrChild() {
-  const $children = document.querySelectorAll(`.${CLASS_NAME_CHILD}`);
+  const $children = $table.querySelectorAll(`.${CLASS_NAME_CHILD}`);
   $children.forEach(child => {
     const tdElement = child.querySelector('td');
     tdElement.colSpan += 1; // Se le suma porque ahora la tabla tiene una columna más
@@ -141,11 +144,15 @@ function popTrChild() {
 }
 
 function canHideLastColumn() {
-  return getComputedStyle($headers[lastIndex]).display == 'table-cell' && $table.clientWidth + paddingExtra > $tableParent.clientWidth;
+  return lastIndex !== 0 &&
+    getComputedStyle($headers[lastIndex]).display == 'table-cell' &&
+    $table.clientWidth + paddingExtra > $tableParent.clientWidth;
 }
 
 function canShowLastColumn() {
-  return getComputedStyle($headers[lastIndex + 1]).display == 'none' && twbi[lastIndex + 1] + paddingExtra < $tableParent.clientWidth;
+  return lastIndex !== maxIndex &&
+    getComputedStyle($headers[lastIndex + 1]).display == 'none' &&
+    twbi[lastIndex + 1] + paddingExtra < $tableParent.clientWidth;
 }
 // Cuando las dimensiones del contenedor de la table cambien se ocultan o muestran columnas si es posible
 const resizeObserver = new ResizeObserver(() => {
@@ -159,12 +166,22 @@ const resizeObserver = new ResizeObserver(() => {
     showLastColumn();
     popTrChild();
   }
-  if (lastIndex !== $headers.length - 1) {
-    $table.classList.add('table-responsive--collapsed');
-  } else {
-    $table.classList.remove('table-responsive--collapsed');
-  }
+  if (lastIndex !== maxIndex) // Si la condición se cumple significa que hay columnas ocultas
+    addCollapsed();
+  else
+    removeCollapsed();
 });
+function addCollapsed() {
+  $table.classList.add('table-responsive--collapsed');
+  isCollapsible = true;
+}
+function removeCollapsed() {
+  $table.classList.remove('table-responsive--collapsed');
+  isCollapsible = false;
+  // En caso de que hayan filas hijas abiertas se eliminan
+  const $children = $table.querySelectorAll(`.${CLASS_NAME_CHILD}`);
+  $children.forEach($child => $child.parentNode.removeChild($child));
+}
 
 resizeObserver.observe($tableParent);
 
