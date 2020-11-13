@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <table id="table" class="table-responsive table-responsive--nowrap">
+  <table id="table">
     <thead>
       <tr>
         <th>CODE</th>
@@ -39,7 +39,43 @@
       </tr>
     </tbody>
   </table>
-  <script src="main.js"></script>
+  <table id="table2">
+    <thead>
+      <tr>
+        <th>CODE</th>
+        <th>NAME</th>
+        <th>QUANTITY</th>
+        <th>PRICE</th>
+        <th>TOTAL</th>
+        <th>COMMENT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="table-cell--right">1</td>
+        <td>iPhone X</td>
+        <td class="table-cell--right">2</td>
+        <td class="table-cell--right">$ 800</td>
+        <td class="table-cell--right">$ 1600</td>
+        <td>The product have many days in cellar.</td>
+      </tr>
+      <tr>
+        <td class="table-cell--right">1</td>
+        <td>iPhone X</td>
+        <td class="table-cell--right">2</td>
+        <td class="table-cell--right">$ 800</td>
+        <td class="table-cell--right">$ 1600</td>
+        <td>The product have many days in cellar.</td>
+      </tr>
+    </tbody>
+  </table>
+  <script src="adaptable.min.js"></script>
+  <script>
+    const table = window.AdapTable({
+      id: 'table',
+      nowrap: true
+    });
+  </script>
 </body>
 
 </html>
