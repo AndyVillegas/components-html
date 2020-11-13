@@ -10,8 +10,8 @@ const $rows = $table.tBodies[0].rows;
 const columnsLength = $headers.length;
 const style = getComputedStyle($tableParent);
 const paddingExtra = (parseInt(style.paddingRight) + parseInt(style.paddingLeft));
-const twbi = getTableWidthByIndex();
 const maxIndex = columnsLength - 1; // Es el índice mpaximo de las columnas
+let twbi = getTableWidthByIndex(); // El ancho de la tabla según las columnas mostradas
 let lastIndex = maxIndex; // El índice hace referencia a la última columna mostrada
 let isCollapsible = false; // Bandera para saber si la tabla se puede collapsar o no
 
@@ -157,31 +157,40 @@ function canShowLastColumn() {
 // Cuando las dimensiones del contenedor de la table cambien se ocultan o muestran columnas si es posible
 const resizeObserver = new ResizeObserver(() => {
   while (canHideLastColumn()) {
+    if (!isCollapsible) {
+      isCollapsible = true;
+      twbi = getTableWidthByIndex();
+    }
     hideLastColumn();
     pushTrChild();
     lastIndex--; // La última columna mostrada ahora pasa hacer una menos
   }
   while (canShowLastColumn()) {
+    if (isCollapsible)
+      isCollapsible = false;
     lastIndex++; // Aumentamos una unidad a la última columna mostrada para que así la función la muestre
     showLastColumn();
     popTrChild();
   }
-  if (lastIndex !== maxIndex) // Si la condición se cumple significa que hay columnas ocultas
+  // Si la condición se cumple significa que hay columnas ocultas
+  if (lastIndex !== maxIndex && isCollapsible) {
     addCollapsed();
-  else
+  } else if (lastIndex === maxIndex && !isCollapsible) {
     removeCollapsed();
+  }
 });
-// TODO: Tomar los anchos de las columnas justo antes de que sea collapsible para así calcular el ancho exacto en el que se puede mostrar toda la tabla
+
 function addCollapsed() {
   $table.classList.add('table-responsive--collapsed');
-  isCollapsible = true;
 }
+
 function removeCollapsed() {
   $table.classList.remove('table-responsive--collapsed');
-  isCollapsible = false;
   // En caso de que hayan filas hijas abiertas se eliminan
   const $children = $table.querySelectorAll(`.${CLASS_NAME_CHILD}`);
   $children.forEach($child => $child.parentNode.removeChild($child));
+  const $parents = $table.querySelectorAll(`.${CLASS_NAME_PARENT}`);
+  $parents.forEach($parent => $parent.classList.remove(CLASS_NAME_PARENT));
 }
 
 resizeObserver.observe($tableParent);
